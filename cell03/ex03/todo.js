@@ -5,9 +5,13 @@ let todoListArray = [];
 
 const oldCookie = getMyCookie("todoData");
 if (oldCookie !== null && oldCookie !== "") {
-    todoListArray = JSON.parse(oldCookie);
+    try {
+        todoListArray = JSON.parse(oldCookie);
+    } catch (e) {
+        todoListArray = [];
+    }
     
-    for (let i = 0; i < todoListArray.length; i++) {
+    for (let i = todoListArray.length - 1; i >= 0; i--) {
         addNewTodoToScreen(todoListArray[i], false);
     }
 }
@@ -58,13 +62,12 @@ function saveDataToCookie() {
     d.setTime(d.getTime() + (7 * 24 * 60 * 60 * 1000));
     const expiresTime = "expires=" + d.toUTCString();
     
-    document.cookie = "todoData=" + textData + ";" + expiresTime + ";path=/";
+    document.cookie = "todoData=" + encodeURIComponent(textData) + ";" + expiresTime + ";path=/";
 }
 
 function getMyCookie(cookieName) {
     const nameToFind = cookieName + "=";
-    const decodedCookie = decodeURIComponent(document.cookie);
-    const cookieArray = decodedCookie.split(';');
+    const cookieArray = document.cookie.split(';');
     
     for (let i = 0; i < cookieArray.length; i++) {
         let item = cookieArray[i];
@@ -72,7 +75,7 @@ function getMyCookie(cookieName) {
             item = item.substring(1);
         }
         if (item.indexOf(nameToFind) === 0) {
-            return item.substring(nameToFind.length, item.length);
+            return decodeURIComponent(item.substring(nameToFind.length));
         }
     }
     return "";
