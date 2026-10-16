@@ -242,4 +242,3 @@ applyTheme(matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
   window.addEventListener('resize', function () { if (nav.classList.contains('is-open')) size(); });
 })();
-
